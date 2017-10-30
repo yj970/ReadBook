@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="press_background">#F1F1F1</color>
+    <color name="translucent_background">#00000000</color>
+    <color name="grey">#CFCFCF</color>
+    <color name="green">#90EE90</color>
+    <color name="blue">#62BDFD</color>
+    <color name="bar_color">#739999</color>
+    <color name="btn_color">#739999</color>
+    <color name="black">#666</color>
+    <color name="white">#fff</color>
+    <color name="white_smoke">#F5F5F5</color>
+
+</resources>
