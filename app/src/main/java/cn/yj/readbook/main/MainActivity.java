@@ -17,7 +17,7 @@ import cn.yj.readbook.R;
 import cn.yj.readbook.base.BaseActivity;
 import cn.yj.readbook.base.DataManager;
 import cn.yj.readbook.base.bean.Book;
-import cn.yj.readbook.scan.ScanActivity;
+import cn.yj.readbook.scan.v.ScanActivity;
 import cn.yj.readbook.view.recyclerview.RBRecyclerView;
 
 public class MainActivity extends BaseActivity {

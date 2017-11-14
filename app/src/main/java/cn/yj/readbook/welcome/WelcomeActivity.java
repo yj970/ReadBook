@@ -8,7 +8,7 @@ import java.util.List;
 import cn.yj.readbook.Constant;
 import cn.yj.readbook.base.bean.Book;
 import cn.yj.readbook.main.MainActivity;
-import cn.yj.readbook.scan.ScanActivity;
+import cn.yj.readbook.scan.v.ScanActivity;
 import cn.yj.readbook.utils.sharedPreference.SharedPreferenceUtil;
 
 /**
@@ -29,4 +29,5 @@ public class WelcomeActivity extends Activity{
             MainActivity.startMainActivity(this, (List<Book>) oBooks);
         }
     }
+
 }

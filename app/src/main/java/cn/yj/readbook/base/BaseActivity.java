@@ -1,15 +1,15 @@
 package cn.yj.readbook.base;
 
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.WindowManager;
 
 /**
  * Created by yangjie on 2017/10/25.
  */
 
-public class BaseActivity extends Activity{
+public class BaseActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

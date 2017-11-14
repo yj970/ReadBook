@@ -1,6 +1,7 @@
 package cn.yj.readbook.utils;
 
 import android.content.Context;
+import android.view.WindowManager;
 
 /**
  * Created by yangjie on 2017/10/24.
@@ -48,5 +49,13 @@ public class CommonUtil {
     public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
+    }
+
+
+    public static int getScreenHeight(Context context) {
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        int height = wm.getDefaultDisplay().getHeight();
+        return height;
     }
 }

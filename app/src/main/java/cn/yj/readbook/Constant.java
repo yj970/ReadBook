@@ -17,5 +17,10 @@ public interface Constant {
     String TEXT_READ_MODEL_KEY = "text_read_model_key";
     String TEXT_TYPEFACE_KEY = "text_typeface_key";
 
+    String FILTER_ENGLISH_KEY = "filter_english_key";
+    String FILTER_NUMBER_KEY = "filter_number_key";
+
+
+
     int PERMISSION_CODE_STORAGE = 1; // sd卡权限
 }

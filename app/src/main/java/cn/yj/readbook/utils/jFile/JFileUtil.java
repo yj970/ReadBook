@@ -1,10 +1,16 @@
 package cn.yj.readbook.utils.jFile;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +28,43 @@ public class JFileUtil {
 
 
     public static ArrayList<FileInfo> scanFile(Activity activity, Type... types) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { // 判断SDK版本是不是4.4或者高于4.4
+            String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()+"/tencent/QQfile_recv"};
+            MediaScannerConnection.scanFile(activity, paths, null, new MediaScannerConnection.MediaScannerConnectionClient() {
+                @Override
+                public void onMediaScannerConnected() {
+                    Log.d("MyTAG", "connect..");
+                }
+
+                @Override
+                public void onScanCompleted(String path, Uri uri) {
+                    Log.d("MyTAG", Environment.getExternalStorageDirectory().toString()+"/tencent/QQfile_recv");
+                    Log.d("MyTAG", "ScanCompled...");
+                }
+            });
+        } else {
+            final Intent intent;
+                intent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
+                intent.setClassName("com.android.providers.media", "com.android.providers.media.MediaScannerReceiver");
+                intent.setData(Uri.fromFile(Environment.getExternalStorageDirectory()));
+                Log.v("MyTAG", "directory changed, send broadcast:" + intent.toString());
+            activity.sendBroadcast(intent);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//如果是4.4及以上版本
+            Intent mediaScanIntent = new Intent(
+                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            File  f = new File(Environment.getExternalStorageDirectory().toString());
+            Uri contentUri = Uri.fromFile(f); //out is your output file
+            mediaScanIntent.setData(contentUri);
+            activity.sendBroadcast(mediaScanIntent);
+        } else {
+            activity.sendBroadcast(new Intent(
+                    Intent.ACTION_MEDIA_MOUNTED,
+                    Uri.parse("file://"
+                            + Environment.getExternalStorageDirectory())));
+        }
+
         return scanFile(activity, defaultUri, types);
     }
 
@@ -82,7 +125,6 @@ public class JFileUtil {
         if (sql.length() > 0) {
             sql = sql.replaceFirst("or", "");
         }
-
         // 开始构建ContentProvider
         String[] projection = new String[]{
                 MediaStore.Files.FileColumns._ID,
@@ -232,4 +274,41 @@ public class JFileUtil {
     }
 
 
+    /**
+     * 获取QQ存储文件夹的文件
+     * @return
+     */
+    public static ArrayList<FileInfo> scanQQfile_recv() {
+        String path = Environment.getExternalStorageDirectory().getPath()+"/"+"tencent/QQfile_recv";
+        return scanfile(path);
     }
+
+    /**
+     * 获取微信存储文件夹的文件
+     * @return
+     */
+    public static ArrayList<FileInfo> scanWXfile_recv() {
+        String path = Environment.getExternalStorageDirectory().getPath()+"/"+"tencent/MicroMsg/Download";
+        return scanfile(path);
+    }
+
+    /**
+     * 根据路径，获取文件
+     * @param path 文件夹的路径
+     * @return
+     */
+    private static ArrayList<FileInfo> scanfile(String path) {
+        ArrayList<FileInfo> infos = new ArrayList<>();
+        File f = new File(path);
+        if (f.exists()) {
+           File[] files = f.listFiles();
+            for (File file : files) {
+                FileInfo fileInfo = new FileInfo(file.getName(), file.getPath(), file.length()+"");
+                infos.add(fileInfo);
+            }
+        }
+        return infos;
+    }
+
+
+}

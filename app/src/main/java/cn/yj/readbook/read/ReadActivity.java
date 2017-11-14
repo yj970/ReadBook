@@ -78,7 +78,10 @@ public class ReadActivity extends BaseActivity {
         findView();
         bindData();
         setListener();
+
     }
+
+
 
     public void load() {
         // 重新载入历史记录（书的浏览位置）
@@ -255,6 +258,8 @@ public class ReadActivity extends BaseActivity {
             mTvBookName.setText(book.name.replace(".txt", ""));
             load();
         }
+
+
     }
 
     private void findView() {

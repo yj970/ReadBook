@@ -52,6 +52,9 @@ public class SettingManager {
     public int textColor = textColors[0];
     public int backgroundColor = backgroundColors[0];
 
+    public boolean filterEnglishTitle = true;
+    public boolean filterNumberTitle = true;
+
 
     public int getTextSize() {
         return textSize;
@@ -83,8 +86,8 @@ public class SettingManager {
         SharedPreferenceUtil.save(Constant.FILE_KEY, Constant.TEXT_SIZE_KEY, textSize);
         SharedPreferenceUtil.save(Constant.FILE_KEY, Constant.TEXT_READ_MODEL_KEY, readModel);
         SharedPreferenceUtil.save(Constant.FILE_KEY, Constant.TEXT_TYPEFACE_KEY, typeface);
-
-
+        SharedPreferenceUtil.save(Constant.FILE_KEY, Constant.FILTER_ENGLISH_KEY, filterEnglishTitle);
+        SharedPreferenceUtil.save(Constant.FILE_KEY, Constant.FILTER_NUMBER_KEY, filterNumberTitle);
     }
 
     public void load() {
@@ -99,6 +102,14 @@ public class SettingManager {
         Object k = SharedPreferenceUtil.get(Constant.FILE_KEY, Constant.TEXT_TYPEFACE_KEY);
         if (k != null) {
             setTypeface((int)k);
+        }
+        Object l = SharedPreferenceUtil.get(Constant.FILE_KEY, Constant.FILTER_ENGLISH_KEY);
+        if (l != null) {
+            setFilterEnglishTitle((Boolean) l);
+        }
+        Object p = SharedPreferenceUtil.get(Constant.FILE_KEY, Constant.FILTER_NUMBER_KEY);
+        if (p != null) {
+            setFilterNumberTitle((Boolean) p);
         }
 
     }
@@ -125,5 +136,21 @@ public class SettingManager {
     }
     public String getTypefaceKey() {
         return typefaceKeys[typeface];
+    }
+
+    public boolean isFilterEnglishTitle() {
+        return filterEnglishTitle;
+    }
+
+    public void setFilterEnglishTitle(boolean filterEnglishTitle) {
+        this.filterEnglishTitle = filterEnglishTitle;
+    }
+
+    public boolean isFilterNumberTitle() {
+        return filterNumberTitle;
+    }
+
+    public void setFilterNumberTitle(boolean filterNumberTitle) {
+        this.filterNumberTitle = filterNumberTitle;
     }
 }
