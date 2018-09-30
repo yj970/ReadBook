@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import cn.yj.readbook.R;
 import cn.yj.readbook.base.BaseActivity;
 import cn.yj.readbook.base.DataManager;
 import cn.yj.readbook.base.bean.Book;
+import cn.yj.readbook.event.MainActivityResumeEvent;
 import cn.yj.readbook.scan.v.ScanActivity;
 import cn.yj.readbook.view.recyclerview.RBRecyclerView;
 
@@ -33,6 +36,7 @@ public class MainActivity extends BaseActivity {
         intent.putExtra(Constant.EXTRA_BOOKSHELF, (Serializable) books);
         activity.startActivity(intent);
     }
+
 
     public static void startMainActivity(Activity activity, List<Book> books) {
         Intent intent = new Intent(activity, MainActivity.class);
@@ -56,6 +60,7 @@ public class MainActivity extends BaseActivity {
         if (mainAdapter != null) {
             mainAdapter.notifyDataSetChanged();
         }
+        EventBus.getDefault().post(new MainActivityResumeEvent());
     }
 
     private void setListener() {
@@ -68,6 +73,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void bindData() {
+        findViewById(R.id.ll_status_bar).setBackgroundColor(getResources().getColor(R.color.translucent_background));
+
         dataManager = DataManager.getInstance();
         dataManager.bookshelf.clear();
 

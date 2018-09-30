@@ -3,6 +3,10 @@ package cn.yj.readbook.utils;
 import android.content.Context;
 import android.view.WindowManager;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by yangjie on 2017/10/24.
  */
@@ -57,5 +61,20 @@ public class CommonUtil {
                 .getSystemService(Context.WINDOW_SERVICE);
         int height = wm.getDefaultDisplay().getHeight();
         return height;
+    }
+
+    // 获取路径下的全部文件
+    public static List<File> getFiles(String path) {
+        File file=new File(path);
+        File[] files=file.listFiles();
+        List<File> list = Arrays.asList(files);
+        return list;
+//        if (files == null){
+//            Log.e("error","空目录");return null;}
+//        List<String> s = new ArrayList<>();
+//        for(int i =0;i<files.length;i++){
+//            s.add(files[i].getAbsolutePath());
+//        }
+//        return s;
     }
 }

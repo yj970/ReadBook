@@ -4,6 +4,6 @@
     android:layout_height="wrap_content"
     android:id="@+id/ll_status_bar"
     android:paddingTop="@dimen/status_bar_height"
-    android:background="@color/translucent_background">
+    android:background="@color/bar_color">
 
 </LinearLayout>

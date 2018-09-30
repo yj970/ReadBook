@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +24,9 @@ import com.zhy.m.permission.MPermissions;
 import com.zhy.m.permission.PermissionDenied;
 import com.zhy.m.permission.PermissionGrant;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,8 @@ import cn.yj.readbook.Constant;
 import cn.yj.readbook.R;
 import cn.yj.readbook.base.BaseActivity;
 import cn.yj.readbook.base.bean.Book;
+import cn.yj.readbook.event.MainActivityResumeEvent;
+import cn.yj.readbook.find.FindFileActivity;
 import cn.yj.readbook.main.MainActivity;
 import cn.yj.readbook.scan.adapter.ScanAdapter;
 import cn.yj.readbook.scan.p.ScanPresenterImpl;
@@ -46,6 +52,8 @@ public class ScanActivity extends BaseActivity implements ScanView{
     private ScanAdapter mAdapter;
     private Button mBtnAdd;
     private RelativeLayout mRlSetting;
+    private RelativeLayout mRlAdd;
+    private ImageView ivLeft;
     private LinearLayout mLlBottomSettingBar;
     private SwitchButton mSbFilterEnglishTitle;
     private SwitchButton mSbFilterNumberTitle;
@@ -110,6 +118,7 @@ public class ScanActivity extends BaseActivity implements ScanView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
+        EventBus.getDefault().register(this);
 
         findView();
         bindData();
@@ -184,6 +193,13 @@ public class ScanActivity extends BaseActivity implements ScanView{
             }
         });
 
+        mRlAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ScanActivity.this, FindFileActivity.class));
+            }
+        });
+
     }
 
     private void hideBar() {
@@ -203,10 +219,9 @@ public class ScanActivity extends BaseActivity implements ScanView{
     private void bindData() {
         scanPresenter = new ScanPresenterImpl(this);
         ((TextView) findViewById(R.id.tv_title)).setText("本地书库");
-        findViewById(R.id.ll_status_bar).setBackgroundColor(getResources().getColor(R.color.bar_color));
         mSbFilterEnglishTitle.setChecked(scanPresenter.getFilterEnglishTitleChecked());
         mSbFilterNumberTitle.setChecked(scanPresenter.getFilterNumberTitleChecked());
-
+        ivLeft.setImageResource(R.mipmap.add);
 
         if (getIntent().hasExtra(Constant.EXTRA_SCAN_TYPE)) {
             type = (Type) getIntent().getSerializableExtra(Constant.EXTRA_SCAN_TYPE);
@@ -232,7 +247,16 @@ public class ScanActivity extends BaseActivity implements ScanView{
         Toast.makeText(this, "已拒绝授予SD卡的读取权限", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
+    @Subscribe
+    public void accept(MainActivityResumeEvent event){
+        finish();
+    }
 
     private void adapterFilterData() {
         if (mAdapter != null) {
@@ -255,6 +279,8 @@ public class ScanActivity extends BaseActivity implements ScanView{
         mLlBottomSettingBar = (LinearLayout) findViewById(R.id.ll_setting_bar);
         mSbFilterEnglishTitle = (SwitchButton) findViewById(R.id.sb_filter_english_title);
         mSbFilterNumberTitle = (SwitchButton) findViewById(R.id.sb_filter_number_title);
+        mRlAdd = (RelativeLayout) findViewById(R.id.rl_left);
+        ivLeft = (ImageView) findViewById(R.id.iv_left);
     }
 
     @Override
