@@ -34,11 +34,11 @@ public class SettingManager {
     public final String[] keys = {"偏小", "中等", "偏大", "超大"};
     public final Integer[] textSizeValues = {TEXT_SIZE_SMALL, TEXT_SIZE_NORMAL, TEXT_SIZE_LAGER, TEXT_SIZE_SUPER_LAGER};
 
-    public final String[] readModelKeys = {"白天", "黑夜"};
-    public final Integer[] readModelValues = {0, 1};
-    public final Integer[] textColors = {R.color.black, R.color.white_smoke};
-    public final Integer[] backgroundColors = {R.color.white_smoke, R.color.black};
-    public int readModel = 0;// 阅读模式  0：白天 1：黑夜
+    public final String[] readModelKeys = {"白天", "黑夜", "古书"};
+    public final Integer[] readModelValues = {0, 1, 2};
+    public final Integer[] textColors = {R.color.black, R.color.white_smoke, R.color.black};
+    public final Integer[] backgroundColors = {R.color.white_smoke, R.color.black, R.mipmap.bg_old1};
+    public int readModel = 0;// 阅读模式  0：白天 1：黑夜 2:古书
 
 
     public final String[] typefaceKeys = {"默认", "微软雅黑", "方正兰亭黑", "苹方"};

@@ -1,11 +1,14 @@
 package cn.yj.readbook.read;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -62,6 +65,8 @@ public class ReadActivity extends BaseActivity {
     private TextView mTvToast;
     private float brightness;
     private final float maxBrightness = 255f;
+    private GestureDetector gestureDetector;// 手势
+    private RelativeLayout rlBg;
 
     public static void startReadActivity(Activity activity, Book book) {
         Intent intent = new Intent(activity, ReadActivity.class);
@@ -97,19 +102,10 @@ public class ReadActivity extends BaseActivity {
     }
 
     private void setListener() {
-        mTvBook.setOnClickListener(new View.OnClickListener() {
+        mObservableScrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                if (mRlSettingBar.getVisibility() == View.VISIBLE) {
-                    hideSettingBar();
-                    return;
-                }
-
-                if (mRlBottomBar.getVisibility() == View.GONE) {
-                    showBar();
-                } else {
-                    hideBar();
-                }
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
             }
         });
 
@@ -185,8 +181,8 @@ public class ReadActivity extends BaseActivity {
         mTvTextSize.setText(settingManager.getTextSizeString());
         mTvReadModel.setText(settingManager.readModelString);
         mTvBook.setTextColor(getResources().getColor(settingManager.textColor));
-        mTvBook.setBackgroundResource(settingManager.backgroundColor);
-        findViewById(R.id.status_bar).setBackgroundColor(getResources().getColor(settingManager.backgroundColor));
+        rlBg.setBackgroundResource(settingManager.backgroundColor);
+        findViewById(R.id.status_bar).setBackgroundColor(getResources().getColor(R.color.translucent_background));
         // 字体
         TypefaceUtil tfUtil = new TypefaceUtil(this, settingManager.getTypefacePath());
         tfUtil.setTypeface(mTvBook, false);
@@ -259,10 +255,11 @@ public class ReadActivity extends BaseActivity {
             load();
         }
 
-
+        gestureDetector = new GestureDetector(this, new ReadViewGestureListener(this));
     }
 
     private void findView() {
+        rlBg = (RelativeLayout) findViewById(R.id.rl_bg);
         mTvBook = (TextView) findViewById(R.id.tv_book);
         mObservableScrollView = (ObservableScrollView) findViewById(R.id.osv);
         mRlBottomBar = (RelativeLayout) findViewById(R.id.rl_bottom_bar);
@@ -422,4 +419,48 @@ public class ReadActivity extends BaseActivity {
             }
         }).start();
     }
+
+    /**
+     * 手势助手
+     */
+    private class ReadViewGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        private Context mContext;
+
+        ReadViewGestureListener(Context context) {
+            mContext = context;
+        }
+
+        /**
+         * 用户（轻触触摸屏后）松开，由一个1个MotionEvent ACTION_UP触发
+         */
+        @Override
+        public boolean onSingleTapUp(MotionEvent motionEvent) {
+            float middleX = CommonUtil.getScreenWidth(ReadActivity.this) / 2;
+            float middleY = CommonUtil.getScreenHeight(ReadActivity.this) / 2;
+            float radius = CommonUtil.dp2px(ReadActivity.this, 70);
+            // 点击位置处于中间或工具界面处于显示状态，调出or隐藏工具栏
+            if (mRlSettingBar.getVisibility() == View.VISIBLE || mRlTopBar.getVisibility() == View.VISIBLE ||((middleX - radius) < motionEvent.getX() && motionEvent.getX() < middleX + radius && (middleY - radius) < motionEvent.getY() && motionEvent.getY() < middleY + radius)) {
+                if (mRlSettingBar.getVisibility() == View.VISIBLE) {
+                    hideSettingBar();
+                    return true;
+                }
+
+                if (mRlBottomBar.getVisibility() == View.GONE) {
+                    showBar();
+                } else {
+                    hideBar();
+                }
+            } else if (motionEvent.getX() > middleX + radius) {
+                // 下一页
+                mObservableScrollView.scrollBy(0, CommonUtil.getScreenHeight(mContext)-CommonUtil.getStatusBarHeight(mContext));
+            } else if (motionEvent.getX() < middleX - radius) {
+                // 上一页
+                mObservableScrollView.scrollBy(0, -(CommonUtil.getScreenHeight(mContext)-CommonUtil.getStatusBarHeight(mContext)));
+            }
+            return false;
+        }
+    }
+
+
 }
